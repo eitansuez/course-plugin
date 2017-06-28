@@ -1,0 +1,28 @@
+plugins {
+  id "java-gradle-plugin"
+}
+
+group = 'com.eitan'
+version = 0.2
+
+apply plugin: 'maven-publish'
+
+repositories {
+  mavenCentral()
+  jcenter()
+}
+
+dependencies {
+  compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:3.8.0'
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+    }
+  }
+}
