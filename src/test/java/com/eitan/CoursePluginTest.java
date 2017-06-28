@@ -1,6 +1,11 @@
 package com.eitan;
 
+import groovy.lang.Closure;
+import org.asciidoctor.gradle.AsciidoctorBackend;
+import org.asciidoctor.gradle.AsciidoctorTask;
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -64,6 +69,13 @@ public class CoursePluginTest {
 
     assertThat(resolvedDependency.isPresent()).isTrue();
     assertThat(resolvedDependency.get().getModuleVersion()).isEqualTo(expectedVersion);
+  }
+
+  @Test
+  public void shouldSetBackendToHtml5() {
+    Set<Task> tasks = project.getTasksByName("asciidoctor", false);
+    AsciidoctorTask task = (AsciidoctorTask) tasks.iterator().next();
+    assertThat(task.getBackends()).contains(AsciidoctorBackend.HTML5.getId());
   }
 
 
