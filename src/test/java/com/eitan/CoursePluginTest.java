@@ -7,6 +7,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,15 @@ public class CoursePluginTest {
 
   @Test
   public void shouldApplyAsciidoctorDependencyResolutionStrategy() {
+    assertResolvedDependencyVersion("asciidoctorj-groovy-dsl", "1.0.0.Alpha2");
+  }
 
+  @Test
+  public void shouldConfigureAsciidoctorjVersion() {
+    assertResolvedDependencyVersion("asciidoctorj", "1.5.4.1");
+  }
+
+  private void assertResolvedDependencyVersion(String dependencyName, String expectedVersion) {
     project.getRepositories().add(project.getRepositories().mavenCentral());
     project.getRepositories().add(project.getRepositories().jcenter());
 
@@ -49,12 +58,13 @@ public class CoursePluginTest {
     Set<ResolvedDependency> firstLevelDependencies =
         asciidoctorConfiguration.getResolvedConfiguration().getFirstLevelModuleDependencies();
 
-    ResolvedDependency groovyDslDependency = firstLevelDependencies.stream()
-        .filter(dependency -> "asciidoctorj-groovy-dsl".equals(dependency.getModuleName()))
-        .collect(Collectors.toList()).get(0);
+    Optional<ResolvedDependency> resolvedDependency = firstLevelDependencies.stream()
+        .filter(dependency -> dependencyName.equals(dependency.getModuleName()))
+        .findAny();
 
-    assertThat(groovyDslDependency).isNotNull();
-    assertThat(groovyDslDependency.getModuleVersion()).isEqualTo("1.0.0.Alpha2");
+    assertThat(resolvedDependency.isPresent()).isTrue();
+    assertThat(resolvedDependency.get().getModuleVersion()).isEqualTo(expectedVersion);
   }
+
 
 }

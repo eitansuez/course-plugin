@@ -1,5 +1,6 @@
 package com.eitan;
 
+import org.asciidoctor.gradle.AsciidoctorExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -13,14 +14,7 @@ public class CoursePlugin implements Plugin<Project> {
   public void apply(Project project) {
     setAsciidoctorAsDefaultTask(project);
     applyAsciidoctorPlugin(project);
-    forceResolutionStrategyForDsl(project);
-  }
-
-  private void forceResolutionStrategyForDsl(Project project) {
-    Configuration asciidoctorConfig = project.getConfigurations().getByName("asciidoctor");
-    asciidoctorConfig
-        .getResolutionStrategy()
-        .force("org.asciidoctor:asciidoctorj-groovy-dsl:1.0.0.Alpha2");
+    configureAsciidoctor(project);
   }
 
   private void setAsciidoctorAsDefaultTask(Project project) {
@@ -29,6 +23,13 @@ public class CoursePlugin implements Plugin<Project> {
 
   private void applyAsciidoctorPlugin(Project project) {
     project.getPluginManager().apply("org.asciidoctor.convert");
+  }
+
+  private void configureAsciidoctor(Project project) {
+    AsciidoctorExtension asciidoctorjExtension =
+        (AsciidoctorExtension) project.getExtensions().getByName("asciidoctorj");
+    asciidoctorjExtension.setVersion("1.5.4.1");
+    asciidoctorjExtension.setGroovyDslVersion("1.0.0.Alpha2");
   }
 
 }
