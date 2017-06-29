@@ -78,5 +78,11 @@ public class CoursePluginTest {
     assertThat(task.getBackends()).contains(AsciidoctorBackend.HTML5.getId());
   }
 
+  @Test
+  public void shouldApplyExtensions() {
+    Set<Task> tasks = project.getTasksByName("asciidoctor", false);
+    AsciidoctorTask task = (AsciidoctorTask) tasks.iterator().next();
+    assertThat(task.getAsciidoctorExtensions().size()).isEqualTo(2);
+  }
 
 }
