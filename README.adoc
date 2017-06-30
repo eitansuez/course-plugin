@@ -1,0 +1,5 @@
+== course-plugin
+
+A thin wrapper around the asciidoctor gradle plugin.
+
+I suppose more detail to come at some point.  Not ready for public consumption just yet.
