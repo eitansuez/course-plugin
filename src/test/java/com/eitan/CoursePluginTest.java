@@ -1,9 +1,7 @@
 package com.eitan;
 
-import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorBackend;
 import org.asciidoctor.gradle.AsciidoctorTask;
-import org.codehaus.groovy.runtime.MethodClosure;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
@@ -14,7 +12,6 @@ import org.junit.Test;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

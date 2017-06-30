@@ -3,21 +3,42 @@ package com.eitan;
 import org.asciidoctor.gradle.AsciidoctorBackend;
 import org.asciidoctor.gradle.AsciidoctorExtension;
 import org.asciidoctor.gradle.AsciidoctorTask;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.util.GFileUtils;
+import org.gradle.api.file.CopySpec;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 
-public class CoursePlugin implements Plugin<Project> {
+public class CoursePlugin2 implements Plugin<Project> {
 
   @Override
   public void apply(Project project) {
     setAsciidoctorAsDefaultTask(project);
     applyAsciidoctorPlugin(project);
+
+    extractArtifactsToBuildDir(project);
+
     configureAsciidoctor(project);
+  }
+
+  private void extractArtifactsToBuildDir(Project project) {
+    String jarPath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+
+    File coursePluginDir = new File(project.getBuildDir(), "courseplugin");
+    coursePluginDir.mkdirs();
+
+//    task testTask(type: Copy) {
+//      from(zipTree('courseplugin.jar')) {
+//        include 'web/**/*'
+//        include 'doc/*'
+//        include 'extensions/*'
+//      }
+//      into {
+//        "build/courseplugin"
+//      }
+//    }
   }
 
   private void setAsciidoctorAsDefaultTask(Project project) {
@@ -45,20 +66,8 @@ public class CoursePlugin implements Plugin<Project> {
   }
 
   private void configureExtensions(AsciidoctorTask asciidoctor) {
-    asciidoctor.extensions(
-        fileResource("/extensions/attributes.groovy"),
-        fileResource("/extensions/alternatives.groovy")
-    );
-  }
-
-  private File fileResource(String path) {
-    String tempDir = System.getProperty("java.io.tmpdir");
-    String filename = path.substring(path.lastIndexOf("/") + 1);
-    File file = new File(tempDir, filename);
-
-    GFileUtils.copyURLToFile(getClass().getResource(path), file);
-    file.deleteOnExit();
-    return file;
+    asciidoctor.extensions( "build/courseplugin/extensions/attributes.groovy",
+      "build/courseplugin/extensions/alternatives.groovy" );
   }
 
 }
