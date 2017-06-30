@@ -1,8 +1,5 @@
 package com.eitan
 
-import org.asciidoctor.gradle.AsciidoctorBackend
-import org.asciidoctor.gradle.AsciidoctorExtension
-import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
@@ -16,7 +13,7 @@ class CoursePlugin implements Plugin<Project> {
     configureAsciidoctor(project)
   }
 
-  private void setupToExtractArtifactsBeforeAsciidoctorRuns(Project project) {
+  def setupToExtractArtifactsBeforeAsciidoctorRuns(Project project) {
     def jarPath = getClass().protectionDomain.codeSource.location.path
     println jarPath
 
@@ -35,25 +32,45 @@ class CoursePlugin implements Plugin<Project> {
     task.dependsOn prepTask
   }
 
-  private void configureAsciidoctor(Project project) {
-    AsciidoctorExtension asciidoctorjExtension =
-        (AsciidoctorExtension) project.getExtensions().getByName("asciidoctorj")
-    asciidoctorjExtension.setVersion("1.5.4.1")
-    asciidoctorjExtension.setGroovyDslVersion("1.0.0.Alpha2")
+  def configureAsciidoctor(Project project) {
+    project.extensions.getByName('asciidoctorj').with {
+      version = "1.5.4.1"
+      groovyDslVersion = "1.0.0.Alpha2"
+    }
 
-    AsciidoctorTask asciidoctor =
-        (AsciidoctorTask) project.getTasksByName("asciidoctor", false).iterator().next()
-    configureDefaultBackend(asciidoctor)
-    configureExtensions(asciidoctor)
-  }
+    project.asciidoctor {
+      backends 'html5'
 
-  private void configureDefaultBackend(AsciidoctorTask asciidoctor) {
-    asciidoctor.backends(AsciidoctorBackend.HTML5.getId())
-  }
+      sourceDir project.file('docs')
+      sources {
+        include '**/*.adoc'
+      }
+      resources {
+        from('resources') {
+          include '**/*'
+        }
+        from('build/courseplugin/web') {
+          include '**/*'
+        }
+      }
+      outputDir project.file('build')
+      attributes docinfodir: "${project.buildDir}/courseplugin/doc",
+          toc: 'left',
+          sectnums: '',
+          icons: 'font',
+          experimental: '',
+          linkcss: '',
+          linkattrs: '',
+          docinfo: 'shared',
+          imagesdir: 'images',
+          'source-highlighter': 'highlightjs',
+          highlightjsdir: 'highlight',
+          'allow-uri-read': ''
 
-  private void configureExtensions(AsciidoctorTask asciidoctor) {
-    asciidoctor.extensions( "build/courseplugin/extensions/attributes.groovy",
-        "build/courseplugin/extensions/alternatives.groovy" )
+      extensions new File('build/courseplugin/extensions/attributes.groovy'),
+          new File('build/courseplugin/extensions/alternatives.groovy')
+
+    }
   }
 
 }
