@@ -21,6 +21,15 @@ dependencies {
   testCompile 'org.assertj:assertj-core:3.8.0'
 }
 
+gradlePlugin {
+  plugins {
+    course {
+      id = 'com.eitan.course'
+      implementationClass = 'com.eitan.CoursePlugin'
+    }
+  }
+}
+
 publishing {
   publications {
     mavenJava(MavenPublication) {
