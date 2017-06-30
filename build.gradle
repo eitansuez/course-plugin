@@ -1,9 +1,10 @@
 plugins {
   id "java-gradle-plugin"
+  id 'com.gradle.plugin-publish' version '0.9.7'
 }
 
 group = 'com.eitan'
-version = 0.2
+version = 0.1
 
 apply plugin: 'maven-publish'
 apply plugin: 'groovy'
@@ -26,6 +27,20 @@ gradlePlugin {
     course {
       id = 'com.eitan.course'
       implementationClass = 'com.eitan.CoursePlugin'
+    }
+  }
+}
+
+pluginBundle {
+  website = 'http://github.com/eitansuez/course-plugin'
+  vcsUrl = 'http://github.com/eitansuez/course-plugin.git'
+
+  plugins {
+    coursePlugin {
+      id = 'com.eitan.course'
+      displayName = 'A thin wrapper around the asciidoctor gradle plugin'
+      description = 'Transitively applies the asciidoctor gradle plugin with a particular default configuration, custom html extensions, and bundled artifacts'
+      tags = ['documentation','asciidoctor']
     }
   }
 }
