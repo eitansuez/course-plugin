@@ -6,6 +6,7 @@ group = 'com.eitan'
 version = 0.2
 
 apply plugin: 'maven-publish'
+apply plugin: 'groovy'
 
 repositories {
   mavenCentral()
@@ -13,6 +14,7 @@ repositories {
 }
 
 dependencies {
+  compile localGroovy()
   compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
 
   testCompile 'junit:junit:4.12'
