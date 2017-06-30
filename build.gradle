@@ -32,8 +32,8 @@ gradlePlugin {
 }
 
 pluginBundle {
-  website = 'http://github.com/eitansuez/course-plugin'
-  vcsUrl = 'http://github.com/eitansuez/course-plugin.git'
+  website = 'https://github.com/eitansuez/course-plugin'
+  vcsUrl = 'https://github.com/eitansuez/course-plugin.git'
 
   plugins {
     coursePlugin {
