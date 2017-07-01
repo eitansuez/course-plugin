@@ -8,14 +8,20 @@ class CoursePlugin implements Plugin<Project> {
   private coursePluginDir
 
   void apply(Project project) {
-    coursePluginDir = new File(project.buildDir, "courseplugin")
-    this.coursePluginDir.mkdirs()
+    project.extensions.create("course", CourseInfo)
 
     project.pluginManager.apply 'org.asciidoctor.convert'
     project.defaultTasks = ['asciidoctor']
+
+    coursePluginDir = new File(project.buildDir, "courseplugin")
+    this.coursePluginDir.mkdirs()
+
     extractArtifactsBeforeAsciidoctorRuns(project)
     configureAsciidoctor(project)
+    writeManifestAfterAsciidoctorRuns(project)
+
   }
+
 
   def extractArtifactsBeforeAsciidoctorRuns(Project project) {
     def jarPath = getClass().protectionDomain.codeSource.location.path
@@ -72,5 +78,23 @@ class CoursePlugin implements Plugin<Project> {
 
     }
   }
+
+  def writeManifestAfterAsciidoctorRuns(Project project) {
+    def postTask = project.tasks.create(name: 'writeCfManifest') {
+      doLast {
+        project.file("${project.buildDir}/html5/manifest.yml") << """---
+applications:
+- name: ${project.course.name}
+  host: ${project.course.hostname}
+  memory: 64M
+  buildpack: staticfile_buildpack
+"""
+      }
+    }
+
+    project.asciidoctor.finalizedBy postTask
+
+  }
+
 
 }
