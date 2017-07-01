@@ -2,4 +2,24 @@
 
 A thin wrapper around the asciidoctor gradle plugin.
 
-I suppose more detail to come at some point.  Not ready for public consumption just yet.
+Basically, I started writing course materials using asciidoctor and using the asciidoctor-gradle-plugin.
+
+In the process I created 2-3 extensions:
+
+- a mechanism to add a "copy-to-clipboard" button to code snippets for html backends
+- a mechanism to templatize the entire page so that instructions could be tailored to students
+- a mechanism to display alternative instructions using a tabset
+
+This plugin does a number of things:
+
+- it applies the gradle asciidoctor plugin to the project it's applied to
+- provides a default asciidoctor configuration (`docs` as the sources dir, `resources` is the resources dir, and configures a variety of asciidoctor attributes), which can be overridden by the client project
+- applies the extensions and other artifacts that the extensions require
+
+Basically it removes the tooling from the course project, so that a course has a conventional directory structure with just content, no scripts, no custom docinfo files, etc.. -- that's all sourced from the plugin.
+
+Here's an example of a course that uses the plugin:  https://github.com/eitansuez/scs-2day
+
+Not really meant for public consumption unless you're keen on having these particular extensions, which somewhat compromise the portability of the .adoc file to other backends.
+
+
