@@ -5,8 +5,12 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 
 class CoursePlugin implements Plugin<Project> {
+  private coursePluginDir
 
   void apply(Project project) {
+    coursePluginDir = new File(project.buildDir, "courseplugin")
+    this.coursePluginDir.mkdirs()
+
     project.pluginManager.apply 'org.asciidoctor.convert'
     project.defaultTasks = ['asciidoctor']
     extractArtifactsBeforeAsciidoctorRuns(project)
@@ -16,23 +20,21 @@ class CoursePlugin implements Plugin<Project> {
   def extractArtifactsBeforeAsciidoctorRuns(Project project) {
     def jarPath = getClass().protectionDomain.codeSource.location.path
 
-    File coursePluginDir = new File(project.buildDir, "courseplugin")
-    coursePluginDir.mkdirs()
-
     def prepTask = project.tasks.create(name: 'extractArtifacts', type: Copy) {
       from(project.zipTree(jarPath)) {
         include 'web/**/*'
         include 'doc/*'
         include 'extensions/*'
       }
-      into "${project.buildDir}/courseplugin"
+      into this.coursePluginDir
     }
+
     project.asciidoctor.dependsOn prepTask
   }
 
   def configureAsciidoctor(Project project) {
     project.extensions.asciidoctorj.with {
-      version = "1.5.4.1"
+      version = "1.5.5"
       groovyDslVersion = "1.0.0.Alpha2"
     }
 
@@ -47,12 +49,12 @@ class CoursePlugin implements Plugin<Project> {
         from('resources') {
           include '**/*'
         }
-        from("${project.buildDir}/courseplugin/web") {
+        from("${coursePluginDir}/web") {
           include '**/*'
         }
       }
       outputDir project.buildDir
-      attributes docinfodir: "${project.buildDir}/courseplugin/doc",
+      attributes docinfodir: "${coursePluginDir}/doc",
           toc: 'left',
           sectnums: '',
           icons: 'font',
@@ -65,8 +67,8 @@ class CoursePlugin implements Plugin<Project> {
           highlightjsdir: 'highlight',
           'allow-uri-read': ''
 
-      extensions new File("${project.buildDir}/courseplugin/extensions/attributes.groovy"),
-          new File("${project.buildDir}/courseplugin/extensions/alternatives.groovy")
+      extensions new File("${coursePluginDir}/extensions/attributes.groovy"),
+          new File("${coursePluginDir}/extensions/alternatives.groovy")
 
     }
   }

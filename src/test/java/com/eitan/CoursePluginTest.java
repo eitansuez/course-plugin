@@ -48,7 +48,7 @@ public class CoursePluginTest {
 
   @Test
   public void shouldConfigureAsciidoctorjVersion() {
-    assertResolvedDependencyVersion("asciidoctorj", "1.5.4.1");
+    assertResolvedDependencyVersion("asciidoctorj", "1.5.5");
   }
 
   private void assertResolvedDependencyVersion(String dependencyName, String expectedVersion) {
