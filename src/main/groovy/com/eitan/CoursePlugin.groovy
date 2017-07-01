@@ -9,13 +9,12 @@ class CoursePlugin implements Plugin<Project> {
   void apply(Project project) {
     project.pluginManager.apply 'org.asciidoctor.convert'
     project.defaultTasks = ['asciidoctor']
-    setupToExtractArtifactsBeforeAsciidoctorRuns(project)
+    extractArtifactsBeforeAsciidoctorRuns(project)
     configureAsciidoctor(project)
   }
 
-  def setupToExtractArtifactsBeforeAsciidoctorRuns(Project project) {
+  def extractArtifactsBeforeAsciidoctorRuns(Project project) {
     def jarPath = getClass().protectionDomain.codeSource.location.path
-    println jarPath
 
     File coursePluginDir = new File(project.buildDir, "courseplugin")
     coursePluginDir.mkdirs()
@@ -28,12 +27,11 @@ class CoursePlugin implements Plugin<Project> {
       }
       into "${project.buildDir}/courseplugin"
     }
-    def task = project.getTasksByName('asciidoctor', false).iterator().next()
-    task.dependsOn prepTask
+    project.asciidoctor.dependsOn prepTask
   }
 
   def configureAsciidoctor(Project project) {
-    project.extensions.getByName('asciidoctorj').with {
+    project.extensions.asciidoctorj.with {
       version = "1.5.4.1"
       groovyDslVersion = "1.0.0.Alpha2"
     }
@@ -49,11 +47,11 @@ class CoursePlugin implements Plugin<Project> {
         from('resources') {
           include '**/*'
         }
-        from('build/courseplugin/web') {
+        from("${project.buildDir}/courseplugin/web") {
           include '**/*'
         }
       }
-      outputDir project.file('build')
+      outputDir project.buildDir
       attributes docinfodir: "${project.buildDir}/courseplugin/doc",
           toc: 'left',
           sectnums: '',
@@ -67,8 +65,8 @@ class CoursePlugin implements Plugin<Project> {
           highlightjsdir: 'highlight',
           'allow-uri-read': ''
 
-      extensions new File('build/courseplugin/extensions/attributes.groovy'),
-          new File('build/courseplugin/extensions/alternatives.groovy')
+      extensions new File("${project.buildDir}/courseplugin/extensions/attributes.groovy"),
+          new File("${project.buildDir}/courseplugin/extensions/alternatives.groovy")
 
     }
   }
