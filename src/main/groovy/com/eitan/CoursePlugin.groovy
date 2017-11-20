@@ -40,8 +40,8 @@ class CoursePlugin implements Plugin<Project> {
 
   def configureAsciidoctor(Project project) {
     project.extensions.asciidoctorj.with {
-      version = "1.5.5"
-      groovyDslVersion = "1.0.0.Alpha2"
+      version = '1.5.6'
+      groovyDslVersion = '1.0.0.Alpha2'
     }
 
     project.asciidoctor {
@@ -71,7 +71,9 @@ class CoursePlugin implements Plugin<Project> {
           imagesdir: 'images',
           'source-highlighter': 'highlightjs',
           highlightjsdir: 'highlight',
-          'allow-uri-read': ''
+          'allow-uri-read': '',
+          stylesdir: 'stylesheets',
+          stylesheet: 'asciidoctor-spring.css'
 
       extensions new File("${coursePluginDir}/extensions/attributes.groovy"),
           new File("${coursePluginDir}/extensions/alternatives.groovy")
